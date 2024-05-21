@@ -6,23 +6,32 @@ import { connectBeacon } from "./beacon";
 type ConnectionContext = {
   address: string | undefined;
   connect: () => void;
-  disconnect: () => void;
+  disconnect?: () => void;
 };
 
 const ConnectionContext = createContext<ConnectionContext>(null as any);
 
 export const ConnectionProvider = ({ children }: { children: ReactNode }) => {
-  const [address, setAddress] = useState<string | undefined>(undefined);
-  const [disconnectFn, setDisconnectFn] = useState<() => void>(null as any);
+  const [connection, setConnection] = useState<{
+    address: string;
+    disconnect: () => void;
+  } | null>(null);
   const connect = async () => {
     const res = await connectBeacon();
-    setAddress(res.address);
-    setDisconnectFn(res.disconnect);
+
+    setConnection({ address: res.address, disconnect: res.disconnect });
   };
 
   return (
     <ConnectionContext.Provider
-      value={{ connect, address, disconnect: disconnectFn }}
+      value={{
+        connect,
+        address: connection?.address,
+        disconnect: () => {
+          connection?.disconnect();
+          setConnection(null as any);
+        },
+      }}
     >
       {children}
     </ConnectionContext.Provider>

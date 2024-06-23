@@ -9,7 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@taquito/beacon-wallet": "^19.2.1",
+    "@taquito/beacon-wallet": "20.0.1",
+    "@airgap/beacon-ui": "4.2.2",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18"

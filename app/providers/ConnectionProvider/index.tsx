@@ -18,7 +18,6 @@ export const ConnectionProvider = ({ children }: { children: ReactNode }) => {
   } | null>(null);
   const connect = async () => {
     const res = await connectBeacon();
-
     setConnection({ address: res.address, disconnect: res.disconnect });
   };
 

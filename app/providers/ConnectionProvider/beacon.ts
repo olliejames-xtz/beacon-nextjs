@@ -1,23 +1,22 @@
-import { BeaconWallet } from "@taquito/beacon-wallet";
 import { PermissionScope } from "@airgap/beacon-types";
 
 import { MichelCodecPacker, TezosToolkit } from "@taquito/taquito";
 
-const createBeaconWallet = () =>
-  typeof window === "undefined"
-    ? undefined
-    : new BeaconWallet({
-        name: "My Dapp",
-        appUrl: "mydapp.com",
-        iconUrl: "/img.png",
-        network: "ghostnet",
-        walletConnectOptions: {
-          projectId: "97f804b46f0db632c52af0556586a5f3",
-          relayUrl: "wss://relay.walletconnect.com",
-        },
-        featuredWallets: ["kukai", "trust", "temple", "umami"],
-      } as any);
+const createBeaconWallet = async () => {
+  const BeaconWallet = (await import("@taquito/beacon-wallet")).BeaconWallet;
 
+  return new BeaconWallet({
+    name: "My Dapp",
+    appUrl: "mydapp.com",
+    iconUrl: "/img.png",
+    network: "ghostnet",
+    walletConnectOptions: {
+      projectId: "97f804b46f0db632c52af0556586a5f3",
+      relayUrl: "wss://relay.walletconnect.com",
+    },
+    featuredWallets: ["kukai", "trust", "temple", "umami"],
+  } as any);
+};
 export const getTezosToolkit = () => {
   const url = "https://rpc.ghostnet.teztnets.xyz/";
   const tezosToolkit = new TezosToolkit(url);
@@ -29,7 +28,7 @@ export const connectBeacon = async () => {
   const network = "ghostnet";
   const tezosToolkit = getTezosToolkit();
 
-  const beaconWallet = createBeaconWallet();
+  const beaconWallet = await createBeaconWallet();
   tezosToolkit.setWalletProvider(beaconWallet);
 
   if (!beaconWallet) {
